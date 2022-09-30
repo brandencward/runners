@@ -1,0 +1,36 @@
+name: Docker for resume-runner
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'resume-runner-arm/**'
+  pull_request:
+    branches: [ main ]
+    paths:
+      - 'resume-runner-arm/**'
+  workflow_dispatch:
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }} 
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:    
+      - name: Checkout Repository
+        uses: actions/checkout@v2    
+      - name: Docker Build
+        shell: bash
+        run: |
+          docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
+          DOCKER_BUILDKIT=1 docker buildx build --platform linux/arm64 resume-runner-arm/ -t ghcr.io/brandencward/resume-runner-arm:$(date +%Y%m%d.$GITHUB_RUN_NUMBER) -t ghcr.io/brandencward/resume-runner-arm:latest
+      - name: Docker Publish
+        shell: bash
+        run: |
+          docker images -a
+          echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u brandencward --password-stdin
+          docker push -a ghcr.io/brandencward/resume-runner-arm
