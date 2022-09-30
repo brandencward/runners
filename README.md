@@ -60,3 +60,13 @@ Verify your new runner in Github.
 Go to your Repo > Settings > Actions > Runners
 
 You should see your new self hosted runner with the name of your container.
+
+You can now create github actions for that repository that utilze your new self hosted runner. Simply add this line to the Github Action.
+
+```
+jobs:
+  # This workflow contains a single job called "build"
+  build:
+    # The type of runner that the job will run on
+    runs-on: [self-hosted, RUNNER_LABEL_TO_TRIGGER_ON]
+```
