@@ -1,9 +1,12 @@
 # Base image for texlive runners on ARM64
 FROM menci/archlinuxarm:base
 
+RUN rm -r /etc/pacman.d/gnupg
+RUN pacman-key --init
 RUN gpg --recv-keys 68B3537F39A313B3E574D06777193F152BDBE6A6
 RUN pacman-key --recv-keys 68B3537F39A313B3E574D06777193F152BDBE6A6
-RUN pacman-key --init && pacman -S archlinuxarm-keyring && pacman-key --populate archlinuxarm
+RUN pacman-key --lsign-key 68B3537F39A313B3E574D06777193F152BDBE6A6
+RUN pacman -S archlinuxarm-keyring
 
 RUN pacman -Sy texlive-core texlive-formatsextra texlive-latexextra texlive-bibtexextra ttf-lato --noconfirm \
     && rm -r /var/cache/pacman/pkg/*
