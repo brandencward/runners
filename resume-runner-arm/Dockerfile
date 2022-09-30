@@ -1,6 +1,8 @@
 # Base image for texlive runners on ARM64
 FROM menci/archlinuxarm:base
 
+RUN pacman-key --init && pacman-key --populate archlinuxarm
+
 RUN pacman -Sy texlive-core texlive-formatsextra texlive-latexextra texlive-bibtexextra ttf-lato --noconfirm \
     && rm -r /var/cache/pacman/pkg/*
 
